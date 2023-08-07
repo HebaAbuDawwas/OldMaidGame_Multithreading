@@ -6,7 +6,7 @@ import org.atypon.oldmaidgame.models.cards.CardSuit;
 
 import static org.atypon.oldmaidgame.utils.GameUtils.removeAllMatchingPairsFromHand;
 
-public class AIPlayer extends Player{
+public class AIPlayer extends Player {
     private final Object lock;
 
     public AIPlayer(String name, Object lock) {
@@ -24,26 +24,17 @@ public class AIPlayer extends Player{
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                if(gameStatus.isStillInGame(this)){
-                    if(gameStatus.checkIsGameOver()){
+                if (gameStatus.isStillInGame(this) && gameStatus.isNextPlayer(this)) {
+                    this.takeTurn();
+                    if (gameStatus.checkIsGameOver()) {
                         break;
-                    }
-                    else {
-                        if(gameStatus.isNextPlayer(this)){
-                        this.takeTurn();
-                            if (gameStatus.checkIsGameOver()) {
-                                break;
-                            }
-                        gameStatus.setNextPlayer(gameStatus.getNextPlayer(this));
-                        }
-                    }
+                    } else gameStatus.setNextPlayer(gameStatus.getNextPlayer(this));
                 }
                 lock.notify();
 
             }
         }
-        }
-
+    }
 
 
     @Override
@@ -55,21 +46,17 @@ public class AIPlayer extends Player{
 
     @Override
     public void takeTurn() {
-        synchronized (lock){
-            GameStatus gameStatus = GameStatus.getInstance();
-            System.out.println("P " +gameStatus.getPlayersCount());
-            System.out.println("C  " +gameStatus.getCardsLeft());
-            Player prePlayer = gameStatus.getPreviousPlayer(this);
-            if (prePlayer.getCardCount() > 0) {
-                Card card = prePlayer.giveRandomCard();
-                this.addCardToHand(card);
-                removeAllMatchingPairsFromHand(this);
-                if(this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
 
-
-            }
-
+        GameStatus gameStatus = GameStatus.getInstance();
+        Player prePlayer = gameStatus.getPreviousPlayer(this);
+        if (prePlayer.getCardCount() > 0) {
+            Card card = prePlayer.giveRandomCard();
+            this.addCardToHand(card);
+            removeAllMatchingPairsFromHand(this);
+            if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
         }
+        System.out.println("P " + gameStatus.getPlayersCount());
+        System.out.println("C  " + gameStatus.getCardsLeft());
     }
 
     @Override
@@ -81,10 +68,10 @@ public class AIPlayer extends Player{
     @Override
     public Card giveRandomCard() {
 
-            GameStatus gameStatus = GameStatus.getInstance();
-            Card card = hand.remove(0);
-            removeAllMatchingPairsFromHand(this);
-            if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
+        GameStatus gameStatus = GameStatus.getInstance();
+        Card card = hand.remove(0);
+        removeAllMatchingPairsFromHand(this);
+        if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
 
         return card;
     }

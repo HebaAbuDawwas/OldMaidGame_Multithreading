@@ -3,7 +3,6 @@ package org.atypon.oldmaidgame;
 import org.atypon.oldmaidgame.models.cards.Deck;
 import org.atypon.oldmaidgame.models.players.Player;
 
-import java.util.List;
 import java.util.Vector;
 
 import static org.atypon.oldmaidgame.utils.GameUtils.dealCards;
@@ -13,8 +12,6 @@ public class Game {
     private final Object lock = new Object();
     private final Vector<Player> players;
     private final Deck deck = Deck.getInstance();
-
-
 
 
     public Game(int numPlayers) {
@@ -28,6 +25,7 @@ public class Game {
     public Vector<Player> getPlayers() {
         return players;
     }
+
     public void start() throws InterruptedException {
 
         dealCards(deck, players);
@@ -37,22 +35,20 @@ public class Game {
 
     private void playGameWithParallelPrograming() throws InterruptedException {
 
-        for (Player player: players){
-            Thread thread = new Thread(player);
-            thread.start();
+        while (GameStatus.getInstance().getPlayersCount() > 1) {
+            for (Player player : players) {
+                Thread thread = new Thread(player);
+                thread.start();
+            }
+            Thread.sleep(1000);
+            synchronized (lock) {
+                lock.notify();
+            }
+
         }
-        Thread.sleep(1000);
-        synchronized (lock){
-
-        lock.notify();}
-
-
-
-
 
 
     }
-
 
 
 }

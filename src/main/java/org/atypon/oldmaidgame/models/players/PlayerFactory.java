@@ -1,7 +1,7 @@
 package org.atypon.oldmaidgame.models.players;
 
 public class PlayerFactory {
-    public static Player createPlayer(String name,Object lock, String playerType) {
+    public static Player createPlayer(String name, Object lock, String playerType) {
         if (name == null) {
             throw new IllegalArgumentException("you should provide player name");
         }

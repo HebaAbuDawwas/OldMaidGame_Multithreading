@@ -13,6 +13,7 @@ public abstract class Player implements Runnable {
         this.name = name;
         hand = new ArrayList<>();
     }
+
     public abstract void addCardToHand(Card card);
 
     public abstract void takeTurn();
