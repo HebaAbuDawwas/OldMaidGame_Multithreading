@@ -17,10 +17,10 @@ public class Deck {
 
     public static Deck getInstance() {
         if (instance == null || instance.cards.isEmpty()) {
-            synchronized (Deck.class){
-                if (instance == null || instance.cards.isEmpty())
-                    instance = new Deck();
-            }}
+            synchronized (Deck.class) {
+                if (instance == null || instance.cards.isEmpty()) instance = new Deck();
+            }
+        }
         return instance;
     }
 

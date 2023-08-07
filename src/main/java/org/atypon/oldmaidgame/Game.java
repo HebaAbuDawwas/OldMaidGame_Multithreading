@@ -29,22 +29,21 @@ public class Game {
     public void start() throws InterruptedException {
 
         dealCards(deck, players);
-        playGameWithParallelPrograming();
+        playGame();
 
     }
 
-    private void playGameWithParallelPrograming() throws InterruptedException {
+    private void playGame() throws InterruptedException {
 
-        while (GameStatus.getInstance().getPlayersCount() > 1) {
-            for (Player player : players) {
-                Thread thread = new Thread(player);
-                thread.start();
-            }
-            Thread.sleep(1000);
+        for (Player player : players) {
+            Thread thread = new Thread(player);
+            thread.start();
+        }
+        while (players.size() > 1) {
+            Thread.sleep(50);
             synchronized (lock) {
                 lock.notify();
             }
-
         }
 
 

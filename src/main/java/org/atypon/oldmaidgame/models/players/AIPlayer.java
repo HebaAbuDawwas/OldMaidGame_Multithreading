@@ -14,6 +14,7 @@ public class AIPlayer extends Player {
         this.lock = lock;
     }
 
+
     @Override
     public void run() {
         GameStatus gameStatus = GameStatus.getInstance();
@@ -55,8 +56,6 @@ public class AIPlayer extends Player {
             removeAllMatchingPairsFromHand(this);
             if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
         }
-        System.out.println("P " + gameStatus.getPlayersCount());
-        System.out.println("C  " + gameStatus.getCardsLeft());
     }
 
     @Override

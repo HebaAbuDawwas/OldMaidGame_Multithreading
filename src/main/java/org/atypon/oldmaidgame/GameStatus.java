@@ -15,8 +15,7 @@ public class GameStatus {
     public static GameStatus getInstance() {
         if (instance == null) {
             synchronized (GameStatus.class) {
-                if (instance == null)
-                    instance = new GameStatus();
+                if (instance == null) instance = new GameStatus();
             }
         }
         return instance;
@@ -66,6 +65,7 @@ public class GameStatus {
     public boolean checkIsGameOver() {
         if (getCardsLeft() == 1 && getPlayersCount() == 1) {
             System.out.println(game.getPlayers().get(0) + " is the loser with joker ");
+            game.getPlayers().remove(0);
             return true;
         }
         return false;

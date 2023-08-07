@@ -24,6 +24,7 @@ public abstract class Player implements Runnable {
 
     public abstract int getCardCount();
 
+
     public List<Card> getHand() {
         return this.hand;
     }
