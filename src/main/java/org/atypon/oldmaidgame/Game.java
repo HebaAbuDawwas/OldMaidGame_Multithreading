@@ -15,6 +15,7 @@ public class Game {
 
 
     public Game(int numPlayers) {
+        if(numPlayers < 2) throw new IllegalArgumentException("players should be 2 or more");
         players = initializePlayers(numPlayers, lock);
         GameStatus.getInstance();
         GameStatus.setGame(this);
