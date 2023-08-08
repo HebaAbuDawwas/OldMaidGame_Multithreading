@@ -20,17 +20,19 @@ public class AIPlayer extends Player {
         GameStatus gameStatus = GameStatus.getInstance();
         synchronized (lock) {
             while (gameStatus.getPlayersCount() > 1) {
+
                 try {
                     lock.wait();
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                if (gameStatus.isStillInGame(this) && gameStatus.isNextPlayer(this)) {
+
+                if (gameStatus.isStillInGame(this) && gameStatus.isPlayerTurn(this)) {
                     this.takeTurn();
-                    if (gameStatus.checkIsGameOver()) {
-                        break;
-                    } else gameStatus.setNextPlayer(gameStatus.getNextPlayer(this));
+                    if (gameStatus.checkIsGameOver()) break;
+                    gameStatus.setNextPlayer(gameStatus.getNextPlayer(this));
                 }
+
                 lock.notify();
 
             }
@@ -50,17 +52,16 @@ public class AIPlayer extends Player {
 
         GameStatus gameStatus = GameStatus.getInstance();
         Player prePlayer = gameStatus.getPreviousPlayer(this);
-        if (prePlayer.getCardCount() > 0) {
-            Card card = prePlayer.giveRandomCard();
-            this.addCardToHand(card);
-            removeAllMatchingPairsFromHand(this);
-            if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
-        }
+        Card card = prePlayer.giveRandomCard();
+        this.addCardToHand(card);
+        removeAllMatchingPairsFromHand(this);
+        if (this.getCurrentHandSize() == 0) gameStatus.removePlayerFromGame(this);
+
     }
 
     @Override
-    public boolean removeCard(Card card) {
-        return this.hand.remove(card);
+    public void removeCardFromHand(Card card) {
+        this.hand.remove(card);
     }
 
 
@@ -70,13 +71,13 @@ public class AIPlayer extends Player {
         GameStatus gameStatus = GameStatus.getInstance();
         Card card = hand.remove(0);
         removeAllMatchingPairsFromHand(this);
-        if (this.getCardCount() == 0) gameStatus.removePlayerFromGame(this);
+        if (this.getCurrentHandSize() == 0) gameStatus.removePlayerFromGame(this);
 
         return card;
     }
 
     @Override
-    public int getCardCount() {
+    public int getCurrentHandSize() {
         return this.hand.size();
     }
 

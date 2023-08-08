@@ -36,7 +36,7 @@ public class GameStatus {
     public int getCardsLeft() {
         int cardsLeft = 0;
         for (Player player : game.getPlayers())
-            cardsLeft += player.getCardCount();
+            cardsLeft += player.getCurrentHandSize();
         return cardsLeft;
     }
 
@@ -65,13 +65,12 @@ public class GameStatus {
     public boolean checkIsGameOver() {
         if (getCardsLeft() == 1 && getPlayersCount() == 1) {
             System.out.println(game.getPlayers().get(0) + " is the loser with joker ");
-            game.getPlayers().remove(0);
             return true;
         }
         return false;
     }
 
-    public boolean isNextPlayer(Player player) {
+    public boolean isPlayerTurn(Player player) {
         return player == GameStatus.NextPlayer;
     }
 }

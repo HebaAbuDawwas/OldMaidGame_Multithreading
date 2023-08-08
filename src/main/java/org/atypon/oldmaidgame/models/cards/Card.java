@@ -1,5 +1,8 @@
 package org.atypon.oldmaidgame.models.cards;
 
+import org.atypon.oldmaidgame.models.cards.CardRank;
+import org.atypon.oldmaidgame.models.cards.CardSuit;
+
 public class Card {
     private final CardSuit suit;
     private final CardRank rank;

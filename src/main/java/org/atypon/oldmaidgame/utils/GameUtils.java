@@ -9,6 +9,7 @@ import org.atypon.oldmaidgame.models.players.Player;
 import org.atypon.oldmaidgame.models.players.PlayerFactory;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class GameUtils {
     public static Vector<Player> initializePlayers(int numPlayers, Object lock) {
@@ -32,15 +33,16 @@ public class GameUtils {
             removeAllMatchingPairsFromHand(player);
         }
     }
-
     public static void removeAllMatchingPairsFromHand(Player player) {
+        List<Card> hand = player.getHand();
         Map<CardRank, List<Card>> rankMap = new HashMap<>();
         Map<CardSuit, List<Card>> suitMap = new HashMap<>();
-        List<Card> hand = player.getHand();
+
         for (Card card : hand) {
             rankMap.computeIfAbsent(card.getRank(), k -> new ArrayList<>()).add(card);
             suitMap.computeIfAbsent(card.getSuit(), k -> new ArrayList<>()).add(card);
         }
+
         for (int i = 0; i < hand.size() - 1; i++) {
             Card curCard = hand.get(i);
             if (hand.get(i).getSuit() == CardSuit.JOKER) continue;
@@ -49,9 +51,10 @@ public class GameUtils {
             List<Card> sharedItems = new ArrayList<>(matchRank);
             sharedItems.retainAll(matchSuit);
             sharedItems.remove(curCard);
+
             if (!sharedItems.isEmpty()) {
-                player.removeCard(curCard);
-                player.removeCard(sharedItems.get(0));
+                player.removeCardFromHand(curCard);
+                player.removeCardFromHand(sharedItems.get(0));
                 matchSuit.remove(curCard);
                 matchRank.remove(sharedItems.get(0));
                 i--;
@@ -60,20 +63,22 @@ public class GameUtils {
         }
     }
 
-    private static List<Card> getMatchingSuits(Map<CardSuit, List<Card>> suitMap, Card card) {
-        List<Card> matchingSuits = new ArrayList<>();
-        if (card.getSuit() == CardSuit.DIAMONDS || card.getSuit() == CardSuit.HEARTS) {
-            if (suitMap.get(CardSuit.DIAMONDS) != null && !suitMap.get(CardSuit.DIAMONDS).isEmpty())
-                matchingSuits.addAll(suitMap.get(CardSuit.DIAMONDS));
-            if (suitMap.get(CardSuit.HEARTS) != null && !suitMap.get(CardSuit.HEARTS).isEmpty())
-                matchingSuits.addAll(suitMap.get(CardSuit.HEARTS));
-
-        } else if (card.getSuit() == CardSuit.CLUBS || card.getSuit() == CardSuit.SPADES) {
-            if (suitMap.get(CardSuit.CLUBS) != null && !suitMap.get(CardSuit.CLUBS).isEmpty())
-                matchingSuits.addAll(suitMap.get(CardSuit.CLUBS));
-            if (suitMap.get(CardSuit.SPADES) != null && !suitMap.get(CardSuit.SPADES).isEmpty())
-                matchingSuits.addAll(suitMap.get(CardSuit.SPADES));
+private static List<Card> getMatchingSuits(Map<CardSuit, List<Card>> suitMap, Card card) {
+    List<Card> matchingSuits = new ArrayList<>();
+    for (CardSuit suit : CardSuit.values()) {
+        if (isMatchingSuit(card.getSuit(), suit) && suitMap.containsKey(suit)) {
+            matchingSuits.addAll(suitMap.get(suit));
         }
-        return matchingSuits;
     }
+    return matchingSuits;
+}
+
+    private static boolean isMatchingSuit(CardSuit cardSuit, CardSuit suit) {
+        return ((cardSuit == CardSuit.DIAMONDS || cardSuit == CardSuit.HEARTS) &&
+                (suit == CardSuit.DIAMONDS || suit == CardSuit.HEARTS))
+                || ((cardSuit == CardSuit.CLUBS || cardSuit == CardSuit.SPADES) &&
+                (suit == CardSuit.CLUBS || suit == CardSuit.SPADES)
+                );
+    }
+
 }

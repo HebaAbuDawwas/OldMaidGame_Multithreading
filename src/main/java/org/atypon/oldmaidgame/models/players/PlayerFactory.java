@@ -5,7 +5,8 @@ public class PlayerFactory {
         if (name == null) {
             throw new IllegalArgumentException("you should provide player name");
         }
-        // here we can extend the code to add human player and so on
-        return new AIPlayer(name, lock);
+       if(playerType.equalsIgnoreCase("AIPlayer"))
+            return new AIPlayer(name, lock);
+       return null;
     }
 }

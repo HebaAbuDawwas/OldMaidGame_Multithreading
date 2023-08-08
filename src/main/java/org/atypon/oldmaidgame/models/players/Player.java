@@ -18,11 +18,11 @@ public abstract class Player implements Runnable {
 
     public abstract void takeTurn();
 
-    public abstract boolean removeCard(Card card);
+    public abstract void removeCardFromHand(Card card);
 
     public abstract Card giveRandomCard();
 
-    public abstract int getCardCount();
+    public abstract int getCurrentHandSize();
 
 
     public List<Card> getHand() {
